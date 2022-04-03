@@ -1,31 +1,55 @@
-package com.example.prospectron.transaction;
+package com.example.prospectron.model;
 
 import com.fasterxml.jackson.databind.util.JSONPObject;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
+@Entity
+@Table
 public class Transaction {
+    @Id
+    @SequenceGenerator(
+            name = "transaction_sequence",
+            sequenceName = "transaction_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "transaction_sequence"
+    )
 
     private Long id;
     private Timestamp date;
-    private BigDecimal saleAmount;
+    private double saleAmount;
     private String orderRef;
-    private List<Long> productIds;
+    private String productIds;
 
-    public Transaction(Timestamp date, BigDecimal saleAmount, String orderRef, List<Long> productIds) {
+    public Transaction(){
+
+    }
+
+    public Transaction(Long id,
+                       Timestamp date,
+                       double saleAmount,
+                       String orderRef,
+                       String productIds) {
+        this.id = id;
         this.date = date;
         this.saleAmount = saleAmount;
         this.orderRef = orderRef;
         this.productIds = productIds;
     }
 
-    public Transaction(Timestamp date, String orderRef, List<Long> productIds) {
+    public Transaction(Timestamp date, double saleAmount, String orderRef, String productIds) {
         this.date = date;
+        this.saleAmount = saleAmount;
         this.orderRef = orderRef;
         this.productIds = productIds;
     }
+
 
     public Timestamp getDate() {
         return date;
@@ -35,11 +59,11 @@ public class Transaction {
         this.date = date;
     }
 
-    public BigDecimal getSaleAmount() {
+    public double getSaleAmount() {
         return saleAmount;
     }
 
-    public void setSaleAmount(BigDecimal saleAmount) {
+    public void setSaleAmount(double saleAmount) {
         this.saleAmount = saleAmount;
     }
 
@@ -51,12 +75,16 @@ public class Transaction {
         this.orderRef = orderRef;
     }
 
-    public List<Long> getProductIds() {
+    public String getProductIds() {
         return productIds;
     }
 
-    public void setProductIds(List<Long> productIds) {
+    public void setProductIds(String productIds) {
         this.productIds = productIds;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     @Override
