@@ -1,14 +1,10 @@
 package com.example.prospectron.controller;
 
+import com.example.prospectron.exception.ApiRequestException;
 import com.example.prospectron.model.Transaction;
 import com.example.prospectron.service.TransactionService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.JSONPObject;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Array;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,23 +22,35 @@ public class TransactionController {
 
     @GetMapping
     public Iterable<Transaction> getTransactions(){
-        return transactionService.getTransactions();
+        try{
+            return transactionService.getTransactions();
+        } catch (ApiRequestException ex){
+            throw new ApiRequestException("Failed to read from database", ex);
+        }
+
     }
 
     @GetMapping(path = "{transactionId}")
     public Optional<Transaction> getTransactionById(@PathVariable("transactionId") Long transactionId){
-        return transactionService.getTransactionById(transactionId);
+        try{
+            return transactionService.getTransactionById(transactionId);
+        } catch (ApiRequestException ex){
+            throw new ApiRequestException("Failed to read from database", ex);
+        }
     }
 
     @PostMapping
-    public void storeTransaction(@RequestBody Map<String, Object> payload)throws Exception {
-
-        JSONObject transactionData= new JSONObject(new ObjectMapper().writeValueAsString(payload));
-        transactionService.storeTransactionDetails(transactionData);
-
+    public List<Transaction> storeTransaction(@RequestBody List<Map<String, Object>> payload)throws Exception {
+        return  transactionService.storeTransactionDetails(payload);
     }
+
     @DeleteMapping(path = "{transactionId}")
-    public void deleteTransaction(@PathVariable("transactionId") Long id){
-        transactionService.deleteTransaction(id);
+    public String deleteTransaction(@PathVariable("transactionId") Long id){
+        try{
+            transactionService.deleteTransaction(id);
+            return "Transaction deleted";
+        } catch (ApiRequestException ex){
+            throw new ApiRequestException("Failed to read from database", ex);
+        }
     }
 }
