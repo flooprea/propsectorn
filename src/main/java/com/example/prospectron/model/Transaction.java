@@ -1,11 +1,10 @@
 package com.example.prospectron.model;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.json.JSONArray;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.List;
 
 @Entity
 @Table
@@ -22,10 +21,12 @@ public class Transaction {
     )
 
     private Long id;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp date;
     private double saleAmount;
     private String orderRef;
-    private String productIds;
+    @Transient
+    private JSONArray products;
 
     public Transaction(){
 
@@ -35,32 +36,24 @@ public class Transaction {
                        Timestamp date,
                        double saleAmount,
                        String orderRef,
-                       String productIds) {
+                       JSONArray products) {
         this.id = id;
         this.date = date;
         this.saleAmount = saleAmount;
         this.orderRef = orderRef;
-        this.productIds = productIds;
+        this.products = products;
     }
 
-    public Transaction(Timestamp date, double saleAmount, String orderRef, String productIds) {
+    public Transaction(Timestamp date, double saleAmount, String orderRef, JSONArray products) {
         this.date = date;
         this.saleAmount = saleAmount;
         this.orderRef = orderRef;
-        this.productIds = productIds;
+        this.products = products;
     }
 
-
-    public Timestamp getDate() {
-        return date;
-    }
-
-    public void setDate(Timestamp date) {
+    public Transaction(Timestamp date,String orderRef) {
         this.date = date;
-    }
-
-    public double getSaleAmount() {
-        return saleAmount;
+        this.orderRef = orderRef;
     }
 
     public void setSaleAmount(double saleAmount) {
@@ -71,20 +64,12 @@ public class Transaction {
         return orderRef;
     }
 
-    public void setOrderRef(String orderRef) {
-        this.orderRef = orderRef;
-    }
-
-    public String getProductIds() {
-        return productIds;
-    }
-
-    public void setProductIds(String productIds) {
-        this.productIds = productIds;
-    }
-
     public Long getId() {
         return id;
+    }
+
+    public double getSaleAmount() {
+        return saleAmount;
     }
 
     @Override
@@ -92,7 +77,9 @@ public class Transaction {
         return "Transaction{" +
                 "id=" + id +
                 ", date=" + date +
-                ", productIds=" + productIds +
+                ", products=" + products +
                 '}';
     }
+
+
 }
