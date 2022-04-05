@@ -1,28 +1,17 @@
 package com.example.prospectron.service;
 
-import com.example.prospectron.model.Transaction;
 import com.example.prospectron.repository.ProductRepository;
 import com.example.prospectron.repository.TransactionRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
-import java.net.URL;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class) //add to remove AutoClosable
@@ -39,6 +28,7 @@ class TransactionServiceTest {
     }
 
     @Test
+    @Disabled
     void testGetTransactions() {
         //when
         underTest.getTransactions();

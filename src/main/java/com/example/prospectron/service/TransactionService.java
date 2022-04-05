@@ -86,8 +86,9 @@ public class TransactionService {
             }
 
             transList.add(t);
-            t.setSaleAmount(productRepository.findByTransactionId(t.getId()).
-                    stream().mapToDouble(o -> o.getPrice()).sum());
+            double sumOfProductPrice = productRepository.findByTransactionId(t.getId()).
+                    stream().mapToDouble(o -> o.getPrice()).sum();
+            t.setSaleAmount((double)Math.round(sumOfProductPrice * 100000d) / 100000d);
         }
         return transList;
     }

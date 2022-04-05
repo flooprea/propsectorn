@@ -68,6 +68,10 @@ public class Transaction {
         return id;
     }
 
+    public double getSaleAmount() {
+        return saleAmount;
+    }
+
     @Override
     public String toString() {
         return "Transaction{" +
