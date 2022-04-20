@@ -1,7 +1,6 @@
 package com.example.prospectron.model;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 
 @Entity
 @Table
@@ -16,21 +15,23 @@ public class Product {
             strategy = GenerationType.SEQUENCE,
             generator = "product_sequence"
     )
-
     private Long id;
     private double price;
     private String name;
-    private Long transactionId;
+    @ManyToOne(fetch = FetchType.EAGER)     //define mapping relationship and enable eager loading
+    @JoinColumn(name="transaction_id")  //map products to transaction by joining on transaction_id
+    private Transaction transaction;
+
 
     public Product(){
 
     }
 
-    public Product(Long id, double price, String name, Long transactionId) {
+    public Product(Long id, double price, String name, Transaction transaction) {
         this.id = id;
         this.price = price;
         this.name = name;
-        this.transactionId = transactionId;
+        this.transaction = transaction;
     }
 
     public Product(double price, String name) {
@@ -38,14 +39,42 @@ public class Product {
         this.name = name;
     }
 
-    public Product(double price, String name, Long transactionId) {
+    public Product(double price, String name, Transaction transaction) {
         this.price = price;
         this.name = name;
-        this.transactionId = transactionId;
+        this.transaction = transaction;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public double getPrice() {
         return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Transaction gettransaction() {
+        return transaction;
+    }
+
+    public void settransaction(Transaction transaction) {
+        this.transaction = transaction;
     }
 
     @Override
@@ -54,7 +83,7 @@ public class Product {
                 "id=" + id +
                 ", price=" + price +
                 ", name='" + name + '\'' +
-                ", transactionId=" + transactionId +
+                ", transaction=" + transaction +
                 '}';
     }
 }
