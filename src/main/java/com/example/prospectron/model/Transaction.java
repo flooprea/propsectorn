@@ -1,10 +1,11 @@
 package com.example.prospectron.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.json.JSONArray;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Table
@@ -20,23 +21,25 @@ public class Transaction {
             generator = "transaction_sequence"
     )
 
+    @Column(name = "id")
     private Long id;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp date;
     private double saleAmount;
     private String orderRef;
-    @Transient
-    private JSONArray products;
+    @Transient  //eliminates the need to have this information persisted from the db
+    @JsonBackReference   //avoid JSON infinite recursion exception
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "transaction")   //map entities and enable eager loading
+    private List<Product> products;
 
     public Transaction(){
-
     }
 
     public Transaction(Long id,
                        Timestamp date,
                        double saleAmount,
                        String orderRef,
-                       JSONArray products) {
+                       List<Product> products) {
         this.id = id;
         this.date = date;
         this.saleAmount = saleAmount;
@@ -44,7 +47,10 @@ public class Transaction {
         this.products = products;
     }
 
-    public Transaction(Timestamp date, double saleAmount, String orderRef, JSONArray products) {
+    public Transaction(Timestamp date,
+                       double saleAmount,
+                       String orderRef,
+                       List<Product> products) {
         this.date = date;
         this.saleAmount = saleAmount;
         this.orderRef = orderRef;
@@ -56,6 +62,18 @@ public class Transaction {
         this.orderRef = orderRef;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public Timestamp getDate() {
+        return date;
+    }
+
+    public double getSaleAmount() {
+        return saleAmount;
+    }
+
     public void setSaleAmount(double saleAmount) {
         this.saleAmount = saleAmount;
     }
@@ -64,12 +82,16 @@ public class Transaction {
         return orderRef;
     }
 
-    public Long getId() {
-        return id;
+    public void setOrderRef(String orderRef) {
+        this.orderRef = orderRef;
     }
 
-    public double getSaleAmount() {
-        return saleAmount;
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
     }
 
     @Override
@@ -77,9 +99,9 @@ public class Transaction {
         return "Transaction{" +
                 "id=" + id +
                 ", date=" + date +
+                ", saleAmount=" + saleAmount +
+                ", orderRef='" + orderRef + '\'' +
                 ", products=" + products +
                 '}';
     }
-
-
 }
